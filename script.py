@@ -1,7 +1,8 @@
-import tkinter
+from Game import Game
 
-window = tkinter.Tk()
-window.geometry("500x500")
-window.title("Diesel")
+game = Game()
 
-window.mainloop()
+
+
+
+game.mainloop()
