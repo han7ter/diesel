@@ -1,5 +1,4 @@
 import tkinter
-from tracemalloc import start
 class Game(tkinter.Tk):
 
     status = "menu"
@@ -12,11 +11,12 @@ class Game(tkinter.Tk):
     def start(self, story):
         self.story = story
         self.status = "game"
+        self.clearWindow()
         self.showStory()
 
-    def showMenu(self):
+    def showMenu(self, story):
         self.head = tkinter.Label(self, text = "МЕНЮ")
-        self.button1 = tkinter.Button(self, text = "новая игра", command = start)
+        self.button1 = tkinter.Button(self, text = "новая игра", command = lambda story = story: self.start(story))
         self.button2 = tkinter.Button(self, text = "загрузить игру")
         self.button3 = tkinter.Button(self, text = "выйти из игры")
         self.head.pack()
@@ -25,7 +25,8 @@ class Game(tkinter.Tk):
         self.button3.pack()
 
     def clearWindow(self):
-        print("Метод очистки экрана")
+        for widget in self.winfo_children():
+            widget.destroy()
     
     def showStory(self):
         self.storyTitle = tkinter.Label(self, text = self.story.getCurrentSituation().title)

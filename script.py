@@ -4,6 +4,6 @@ from Story import Story
 game = Game()
 story = Story()
 
-game.showMenu()
+game.showMenu(story)
 
 game.mainloop()
