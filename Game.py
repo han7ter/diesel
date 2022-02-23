@@ -27,9 +27,18 @@ class Game(tkinter.Tk):
     def clearWindow(self):
         for widget in self.winfo_children():
             widget.destroy()
-    
+
+    def nextStory(self):
+        self.story.nextSituation()
+        self.clearWindow()
+        self.showStory()
+
     def showStory(self):
         self.storyTitle = tkinter.Label(self, text = self.story.getCurrentSituation().title)
         self.storyText  = tkinter.Label(self, text = self.story.getCurrentSituation().text)
+        self.button4 = tkinter.Button(self, text = "далее", command = self.nextStory)
         self.storyTitle.pack()
         self.storyText.pack()
+        self.button4.pack()
+
+    

@@ -12,5 +12,13 @@ class Story:
     currentChapter = "Детство"
     currentSituation = 0
 
+    def nextSituation(self):
+        if self.currentSituation >= len(self.chapters[self.currentChapter]) - 1:
+            return False
+        else:
+            self.currentSituation += 1
+        return True
+
+
     def getCurrentSituation(self):
         return self.chapters[self.currentChapter][self.currentSituation]
