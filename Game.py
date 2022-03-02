@@ -3,9 +3,9 @@ class Game(tkinter.Tk):
 
     status = "menu"
 
-    def _init__(self):
+    def __init__(self):
         super().__init__()
-        self.geometry("700x700")
+        self.geometry("500x500")
         self.title("Diesel")
 
     def start(self, story):
