@@ -34,11 +34,22 @@ class Game(tkinter.Tk):
         self.showStory()
 
     def showStory(self):
-        self.storyTitle = tkinter.Label(self, text = self.story.getCurrentSituation().title)
-        self.storyText  = tkinter.Label(self, text = self.story.getCurrentSituation().text)
+        self.storyTitle = tkinter.Label(self, text = self.story.getCurrentSituation().title, font="Verdana 20")
+        self.storyText  = tkinter.Label(self, text = self.wrap(self.story.getCurrentSituation().text,77))
         self.button4 = tkinter.Button(self, text = "далее", command = self.nextStory)
         self.storyTitle.pack()
         self.storyText.pack()
         self.button4.pack()
 
+    def wrap(self, text, length):
+        words = text.split()
+        lines = []
+        line = ''
+        for w in words:
+            if len(w) + len(line) > length:
+                lines.append(line)
+                line = ''
+            line = line + w + ' '
+            if w is words[-1]: lines.append(line)
+        return '\n'.join(lines)
     

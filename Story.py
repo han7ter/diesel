@@ -23,3 +23,5 @@ class Story:
 
     def getCurrentSituation(self):
         return self.chapters[self.currentChapter][self.currentSituation]
+
+    
