@@ -14,9 +14,54 @@ class Game(tkinter.Tk):
         self.clearWindow()
         self.showStory()
 
+    def getPlayerName(self):
+        self.clearWindow()
+        self.nameTitle = tkinter.Label(self, text = "Введите имя", font="Verdana 20")
+        self.nameTitle.pack()
+        self.name = tkinter.Entry(self)
+        self.name.pack()
+        self.button = tkinter.Button(self, text = "далее", command=self.createPlayer)
+        self.button.pack()
+
+    def createPlayer(self):
+        name = self.name.get()
+        points = 5
+
+        skills = {
+            "engene" : 0
+        }
+
+        def increase(prop):
+            global points
+            points -= 1
+            skills[prop] += 1
+
+        def decrease(prop):
+            global points
+            points += 1
+            skills[prop] -= 1
+
+        self.clearWindow()
+        self.nameTitle = tkinter.Label(self, text = name, font="Verdana 20")
+        self.nameTitle.grid(column=1, row=0)
+        self.points = tkinter.Label(self, text = points, font="Verdana 20")
+        self.points.grid(column = 2, row = 0)
+        self.engene = tkinter.Label(self, text = "Инженерия")
+        self.engene.grid(column=0, row=1)
+        self.buttonMinusEngene = tkinter.Button(self, text = "-", command = decrease("engene"))
+        self.buttonMinusEngene.grid(column=1, row=1)
+
+        self.buttonPlusEngene = tkinter.Button(self, text = "+", command = increase("engene"))
+        self.buttonPlusEngene.grid(column=3, row=1)
+
+        self.SchetEngene = tkinter.Label(self, text = skills["engene"])
+        self.SchetEngene.grid(column=2, row= 1)
+
+
     def showMenu(self, story):
         self.head = tkinter.Label(self, text = "МЕНЮ")
-        self.button1 = tkinter.Button(self, text = "новая игра", command = lambda story = story: self.start(story))
+        # self.button1 = tkinter.Button(self, text = "новая игра", command = lambda story = story: self.start(story))
+        self.button1 = tkinter.Button(self, text = "новая игра", command = self.getPlayerName)
         self.button2 = tkinter.Button(self, text = "загрузить игру")
         self.button3 = tkinter.Button(self, text = "выйти из игры")
         self.head.pack()
@@ -34,12 +79,16 @@ class Game(tkinter.Tk):
         self.showStory()
 
     def showStory(self):
-        self.storyTitle = tkinter.Label(self, text = self.story.getCurrentSituation().title, font="Verdana 20")
-        self.storyText  = tkinter.Label(self, text = self.wrap(self.story.getCurrentSituation().text,77))
-        self.button4 = tkinter.Button(self, text = "далее", command = self.nextStory)
+        situation = self.story.getCurrentSituation()
+        self.storyTitle = tkinter.Label(self, text = situation.title, font="Verdana 20")
+        self.storyText  = tkinter.Label(self, text = self.wrap(situation.text,77))
         self.storyTitle.pack()
         self.storyText.pack()
-        self.button4.pack()
+        self.choiceButtons = []
+        for choice in situation.choices:
+            choiceButton = tkinter.Button(self, text = choice.title)#, command = lambda player = player: self.cons(player))
+            self.choiceButtons.append(choiceButton)
+            choiceButton.pack()
 
     def wrap(self, text, length):
         words = text.split()

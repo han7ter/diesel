@@ -6,4 +6,5 @@ class Choice:
 
     def cons(self, player):
         player[self.prop] += self.difference
+        return player
         
