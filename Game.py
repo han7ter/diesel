@@ -1,15 +1,20 @@
 import tkinter
+from Player import Player
+
+from Story import Story
 class Game(tkinter.Tk):
 
     status = "menu"
+    points = 5
 
     def __init__(self):
         super().__init__()
         self.geometry("500x500")
         self.title("Diesel")
 
-    def start(self, story):
-        self.story = story
+    def start(self, player):
+        self.story = Story()
+        self.player = Player(**player)
         self.status = "game"
         self.clearWindow()
         self.showStory()
@@ -25,42 +30,63 @@ class Game(tkinter.Tk):
 
     def createPlayer(self):
         name = self.name.get()
-        points = 5
 
         skills = {
-            "engene" : 0
+            "engene" : 0,
+            "sociable" : 0,
+            "body" : 0
         }
 
         def increase(prop):
-            global points
-            points -= 1
-            skills[prop] += 1
+            if self.points > 0 and skills[prop] < 5:
+                self.points -= 1
+                skills[prop] += 1
+                updateScores()
+            if self.points == 0:
+                skills["name"] = name
+                self.nextButton = tkinter.Button(self, text = "далее", command = lambda player = skills:self.start(player))
+                self.nextButton.grid(column = 3, row = 5)
 
         def decrease(prop):
-            global points
-            points += 1
-            skills[prop] -= 1
+            if self.points < 5 and 0 < skills[prop]:
+                self.points += 1
+                skills[prop] -= 1
+                updateScores()
+
+        
+        def updateScores():
+            self.pointsText.configure(text=self.points)
+            print(self.skillElements)
+            for skill, val in skills.items():
+                self.skillElements[skill].configure(text=val)
+
 
         self.clearWindow()
         self.nameTitle = tkinter.Label(self, text = name, font="Verdana 20")
         self.nameTitle.grid(column=1, row=0)
-        self.points = tkinter.Label(self, text = points, font="Verdana 20")
-        self.points.grid(column = 2, row = 0)
-        self.engene = tkinter.Label(self, text = "Инженерия")
-        self.engene.grid(column=0, row=1)
-        self.buttonMinusEngene = tkinter.Button(self, text = "-", command = decrease("engene"))
-        self.buttonMinusEngene.grid(column=1, row=1)
+        self.pointsText = tkinter.Label(self, text = self.points, font="Verdana 20")
+        self.pointsText.grid(column = 2, row = 0)
 
-        self.buttonPlusEngene = tkinter.Button(self, text = "+", command = increase("engene"))
-        self.buttonPlusEngene.grid(column=3, row=1)
+        self.skillElements = {}
+        i = 0
+        for skill, val in skills.items():
+            self.skillName = tkinter.Label(self, text = skill)
+            self.skillName.grid(column=0, row=1 + i)
 
-        self.SchetEngene = tkinter.Label(self, text = skills["engene"])
-        self.SchetEngene.grid(column=2, row= 1)
+            self.skillMinus = tkinter.Button(self, text = "-", command = lambda skill = skill: decrease(skill))
+            self.skillMinus.grid(column=1, row=1 + i)
+
+            self.skillPlus = tkinter.Button(self, text = "+", command = lambda skill = skill: increase(skill))
+            self.skillPlus.grid(column=3, row=1 + i)
+
+            self.skillElements[skill] = tkinter.Label(self, text = val)
+            self.skillElements[skill].grid(column=2, row= 1 + i)
+
+            i += 1
 
 
-    def showMenu(self, story):
+    def showMenu(self):
         self.head = tkinter.Label(self, text = "МЕНЮ")
-        # self.button1 = tkinter.Button(self, text = "новая игра", command = lambda story = story: self.start(story))
         self.button1 = tkinter.Button(self, text = "новая игра", command = self.getPlayerName)
         self.button2 = tkinter.Button(self, text = "загрузить игру")
         self.button3 = tkinter.Button(self, text = "выйти из игры")
@@ -86,7 +112,7 @@ class Game(tkinter.Tk):
         self.storyText.pack()
         self.choiceButtons = []
         for choice in situation.choices:
-            choiceButton = tkinter.Button(self, text = choice.title)#, command = lambda player = player: self.cons(player))
+            choiceButton = tkinter.Button(self, text = choice.title, command = lambda player = self.player: choice.cons(player))
             self.choiceButtons.append(choiceButton)
             choiceButton.pack()
 

@@ -5,6 +5,7 @@ class Choice:
         self.difference = difference
 
     def cons(self, player):
+        # Вместо этого вызови метод player.changeProp(self.prop, self.difference)
         player[self.prop] += self.difference
         return player
         
