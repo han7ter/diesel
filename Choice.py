@@ -1,11 +1,16 @@
 class Choice:
-    def __init__(self, title, prop, difference):
+    def __init__(self, title, skills = False, conditions = False):
         self.title = title
-        self.prop = prop
-        self.difference = difference
+        self.skills = skills
+        self.conditions = conditions
 
     def cons(self, player):
-        # Вместо этого вызови метод player.changeProp(self.prop, self.difference)
-        player[self.prop] += self.difference
+        if self.conditions:
+            if player.checkConditions(self.conditions):
+                if self.skills: player.changeProp(self.skills)
+            else:
+                return False
+        else:
+            if self.skills: player.changeProp(self.skills)
         return player
         

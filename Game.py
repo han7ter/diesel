@@ -111,8 +111,16 @@ class Game(tkinter.Tk):
         self.storyTitle.pack()
         self.storyText.pack()
         self.choiceButtons = []
+        def makeChoice(choice):
+            self.player = choice.cons(self.player)
+            if self.player:
+                self.nextStory()
+                self.player.logSkills()
+            else:
+                pass
+
         for choice in situation.choices:
-            choiceButton = tkinter.Button(self, text = choice.title, command = lambda player = self.player: choice.cons(player))
+            choiceButton = tkinter.Button(self, text = choice.title, command = lambda choice = choice: makeChoice(choice))
             self.choiceButtons.append(choiceButton)
             choiceButton.pack()
 
