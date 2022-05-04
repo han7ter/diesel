@@ -1,4 +1,6 @@
 import tkinter
+from tkinter import messagebox
+
 from Player import Player
 
 from Story import Story
@@ -107,22 +109,33 @@ class Game(tkinter.Tk):
     def showStory(self):
         situation = self.story.getCurrentSituation()
         self.storyTitle = tkinter.Label(self, text = situation.title, font="Verdana 20")
+        if situation.textConditions:
+            situation.check(self.player)
         self.storyText  = tkinter.Label(self, text = self.wrap(situation.text,77))
         self.storyTitle.pack()
         self.storyText.pack()
         self.choiceButtons = []
         def makeChoice(choice):
-            self.player = choice.cons(self.player)
-            if self.player:
+            p = choice.cons(self.player)
+            if p:
+                self.player = p
                 self.nextStory()
                 self.player.logSkills()
             else:
-                pass
-
-        for choice in situation.choices:
-            choiceButton = tkinter.Button(self, text = choice.title, command = lambda choice = choice: makeChoice(choice))
+                messagebox.showerror("Ошибка","Не хватает очков для выбора")
+                
+        if len(situation.choices) > 0:
+            for choice in situation.choices:
+                choiceButton = tkinter.Button(self, text = choice.title, command = lambda choice = choice: makeChoice(choice))
+                self.choiceButtons.append(choiceButton)
+                choiceButton.pack()
+        else:
+            choiceButton = tkinter.Button(self, text = "Далее", command = self.nextStory)
             self.choiceButtons.append(choiceButton)
             choiceButton.pack()
+
+
+
 
     def wrap(self, text, length):
         words = text.split()
