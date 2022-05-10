@@ -19,6 +19,8 @@ class Player:                          #др героя - 2400 октябрь
                 self.body += val
             elif prop == "className":
                 self.className = val
+            elif prop == "book":
+                self.book = val
 
     def checkConditions(self, conditions):
         result = True
@@ -42,6 +44,8 @@ class Player:                          #др героя - 2400 октябрь
         elif condition == "body" and self.body != value:
             return False
         elif condition == "className" and self.className != value:
+            return False
+        elif condition == "book" and self.book != value:
             return False
         return True
 
