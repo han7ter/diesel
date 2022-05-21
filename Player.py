@@ -1,13 +1,14 @@
 class Player:                          #др героя - 2400 октябрь
     life = True
     health = 3
-    className = False
 
-    def __init__(self, name, engene, sociable, body):
+    def __init__(self, name, engene, sociable, body, className = False, book = False):
         self.name = name
         self.engene = engene
         self.sociable = sociable
         self.body = body
+        self.className = className
+        self.book = book
 
     def changeProp(self, skills):
         for prop, val in skills.items():

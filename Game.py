@@ -1,5 +1,8 @@
 import tkinter
+import json
 from tkinter import messagebox
+
+import os
 
 from Player import Player
 
@@ -14,8 +17,8 @@ class Game(tkinter.Tk):
         self.geometry("500x500")
         self.title("Diesel")
 
-    def start(self, player):
-        self.story = Story()
+    def start(self, player, chapter = "Детство", situation = 0):
+        self.story = Story(chapter, situation)
         self.player = Player(**player)
         self.status = "game"
         self.clearWindow()
@@ -90,12 +93,13 @@ class Game(tkinter.Tk):
     def showMenu(self):
         self.head = tkinter.Label(self, text = "МЕНЮ")
         self.button1 = tkinter.Button(self, text = "новая игра", command = self.getPlayerName)
-        self.button2 = tkinter.Button(self, text = "загрузить игру")
-        self.button3 = tkinter.Button(self, text = "выйти из игры")
+        self.button2 = tkinter.Button(self, text = "загрузить игру", command = self.loadGame)
+        self.button3 = tkinter.Button(self, text = "выйти из игры", command = self.destroy)
         self.head.pack()
         self.button1.pack()
         self.button2.pack()
         self.button3.pack()
+
 
     def clearWindow(self):
         for widget in self.winfo_children():
@@ -129,12 +133,76 @@ class Game(tkinter.Tk):
                 choiceButton = tkinter.Button(self, text = choice.title, command = lambda choice = choice: makeChoice(choice))
                 self.choiceButtons.append(choiceButton)
                 choiceButton.pack()
+            self.ButtonSave = tkinter.Button(self, text = "Сохранить", command = self.popup_win)
+            self.ButtonSave.pack()
         else:
             choiceButton = tkinter.Button(self, text = "Далее", command = self.nextStory)
             self.choiceButtons.append(choiceButton)
             choiceButton.pack()
+            self.ButtonSave = tkinter.Button(self, text = "Сохранить", command = self.popup_win)
+            self.ButtonSave.pack()
 
 
+    def save(self,tp):
+        for widget in tp.winfo_children():
+            if isinstance(widget, tkinter.Entry):
+                print(widget.get())
+                savedict = {
+                    "name" : self.player.name,
+                    "situation" : self.story.currentSituation,
+                    "chapter" : self.story.currentChapter,
+                    "engene" : self.player.engene,
+                    "sociable" : self.player.sociable,
+                    "body" : self.player.body,
+                    "className" : self.player.className,
+                    "book" : self.player.book
+                }
+                y = json.dumps(savedict)
+                f = open(f"C:\python\projects\diesel\saves\{widget.get()}.json", "w")
+                f.write(y)
+                f.close()
+        tp.destroy()
+        
+
+    def popup_win(self):
+        tp = tkinter.Toplevel(self)
+        tp.geometry("500x200")
+
+        entry1= tkinter.Entry(tp, width= 20)
+        entry1.pack()
+
+        button1= tkinter.Button(tp, text="ok", command=lambda:self.save(tp))
+        button1.pack(pady=5, side= tkinter.TOP)
+
+
+    def loadGame(self):
+        savewind = tkinter.Toplevel(self)
+        savewind.geometry("500x200")
+        names = os.listdir("C:\python\projects\diesel\saves")
+        for files in names:
+            a = files
+            for i in range(5):
+                files = files[:-1]
+            button = tkinter.Button(savewind, text = f"{files}", command = lambda savewind = savewind, a = a:self.loadSave(savewind, a))
+            button.pack()
+
+    def loadSave(self, savewind, a):
+        f = open(f"C:\python\projects\diesel\saves\{a}", "r")
+        save = json.loads(f.read())
+        print(save)
+
+        savewind.destroy()
+
+        skills = {
+            "name" : save["name"],
+            "engene" : save["engene"],
+            "sociable" : save["sociable"],
+            "body" : save["body"],
+            "className" : save["className"],
+            "book" : save["book"]
+        }
+        self.start(skills, save["chapter"], save["situation"])
+        
 
 
     def wrap(self, text, length):
